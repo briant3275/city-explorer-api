@@ -32,8 +32,11 @@ app.get('/throw-an-error', (request, response) => {
 
 app.get('/weather', (request, response) => {
   let cityName = request.query.city_name;
-  console.log(cityName);
-  response.send(weatherData.filter(weather => weather.cityName === cityName).map(weather => new Weather(weather)));
+//   console.log(cityName);
+
+  let cityObj = weatherData.find(weather => weather.cityName === cityName);
+  let selectedCity = new Weather(cityObj);
+  response.send(selectedCity);
 });
 
 app.get('*', (request, response) => {
