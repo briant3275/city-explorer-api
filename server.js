@@ -2,52 +2,55 @@
 
 console.log('Babys first server!');
 
-const express = require('express');
-const req = require('express/lib/request');
-
-const app = express();
 require('dotenv').config();
-const PORT = process.env.PORT || 3002;
+const express = require('express');
+const cors = require('cors');
 
 const weatherData = require('./data/weather.json');
 
+const app = express();
+
+app.use(cors());
+
+const PORT = process.env.PORT || 3002;
+
+// base route
 app.get('/', (request, response) => {
-  response.send('Howdy from the Server!');
+    response.send('Howdy from the Server!');
 });
 
-app.get('/banana', (request, response) => {
-  response.send('Nanners');
-});
-
-app.get('/sayHello', (request, response) => {
-  let name = request.query.name;
-  console.log(request.query);
-  console.log(name);
-  response.status(200).send(`Hello ${name}, from the server!`);
-});
 
 app.get('/throw-an-error', (request, response) => {
-  throw 'You done effed up';
-});
-
-app.get('/weather', (request, response) => {
-  let cityName = request.query.city_name;
-//   console.log(cityName);
-
-  let cityObj = weatherData.find(weather => weather.cityName === cityName);
-  let selectedCity = new Weather(cityObj);
-  response.send(selectedCity);
+    
+    app.get('/weather', (request, response) => {
+        try {
+            let cityName = request.query.cityName;
+            
+            let foundCity = weatherData.find(weather => weather.city_name === cityName);
+            //   let selectedCity = new Weather(foundCity);
+            
+            let forecastArray = foundCity.data.map(day => new Forecast(day));
+            response.send(forecastArray);
+        } catch (error) {
+        throw new Error('Weather Data Currently Unavailable');
+    };
 });
 
 app.get('*', (request, response) => {
-  response.status(404).send(`this ain't it bruh`);
+    response.status(404).send(`Not Found`);
 });
 
-class Weather {
-  constructor(weather){
-    this.cityName = weather.city_name;
-    this.temp = weather.temp;
-  }
+class Forecast {
+    constructor(day) {
+        this.date = day.datetime;
+        this.description = day.weather.description;
+    }
 }
+
+app.use((error, request, response, next) => {
+    console.log(error.message);
+    response.status(500).send(error.message);
+});
+
 
 app.listen(PORT, () => console.log(`listening on port ${PORT}`));
