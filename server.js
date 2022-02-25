@@ -32,7 +32,7 @@ app.get('/weather', async (request, response) => {
     let url = `https://api.weatherbit.io/v2.0/forecast/daily?key=${process.env.WEATHER_API_KEY}&units=I&days=7&lat=${lat}&lon=${lon}`;
 
     let getWeather = await axios.get(url);
-    // weatherArray.push(getWeather);
+
     console.log('getweather!!!!!!!!!!!!!', getWeather.data.data[0].weather.description);
     console.log('getweather!!!!!!!!!opopopopo!!!!', getWeather.data.data[0].datetime);
 
