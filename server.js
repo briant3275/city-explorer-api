@@ -1,13 +1,11 @@
 'use strict';
 
-// console.log('Babys first server!');
-
 require('dotenv').config();
+
 const express = require('express');
 const cors = require('cors');
 const axios = require('axios');
 
-// const weatherData = require('./data/weather.json');
 
 const app = express();
 
@@ -21,10 +19,8 @@ app.get('/', (request, response) => {
 });
 
 
-
-
 app.get('/weather', async (request, response) => {
-
+  console.log("!!!!!!!!!!!!!!!!!!!!", request.query);
   try {
     let lat = request.query.lat;
     let lon = request.query.lon;
@@ -33,32 +29,35 @@ app.get('/weather', async (request, response) => {
 
     let getWeather = await axios.get(url);
 
-    console.log('getweather!!!!!!!!!!!!!', getWeather.data.data[0].weather.description);
-    console.log('getweather!!!!!!!!!opopopopo!!!!', getWeather.data.data[0].datetime);
+    // console.log('getweather!!!!!!!!!!!!!', getWeather.data.data[0].weather.description);
+    // console.log('getweather!!!!!!!!!opopopopo!!!!', getWeather.data.data[0].datetime);
 
-    let dataToSend = getWeather.data.data.map(day => new Forecast(day.datetime, day.weather.description));
-    console.log('41!!!!!!!!!!!!!!!!', dataToSend);
+    let dataToSend = getWeather.data.data.map(day => new Forecast(day));
+    // console.log('41!!!!!!!!!!!!!!!!', dataToSend);
 
 
     response.send(dataToSend);
+    console.log("!!!!!!!!!!!!!!!!!!", lat, lon);
   } catch (error) {
-    console.log(error);
-    throw new Error('Weather Data Currently Unavailable');
+    // console.log(error);
+    response.status(500).send('500, cannot retrieve forecast');
   }
 });
 
 app.get('/movies', async (request, response) => {
   try {
-    let searchQuery = request.query.searchQuery;
-    let url = `https://api.themoviebd.org/3/search/movie?api_key=${process.env.MOVIE_API_KEY}&query=${searchQuery}`;
+    let searchQuery = request.query.cityName;
+    console.log('!!!!!!!!searchquery!!!!!!!!!!!', searchQuery);
+    let url = `https://api.themoviedb.org/3/search/movie?api_key=${process.env.MOVIES_API_KEY}&query=${searchQuery}`;
 
     let getMovieObject = await axios.get(url);
+    console.log("!!!!!!!!!!getmovie", getMovieObject);
 
-    let movieToSend = getMovieObject.data.results.map(movie => new Movies(movie.title, movie.release_date, movie.overview));
+    let movieToSend = getMovieObject.data.results.map(movie => new Movies(movie));
     console.log('heeeeyyyyyyyyyyy', movieToSend);
     response.send(movieToSend);
   } catch (error) {
-    throw new Error('Movie Data Currently Unavailable');
+    response.status(500).send('500, cannot retrieve movies');
   }
 });
 
@@ -68,17 +67,21 @@ app.get('*', (request, response) => {
 });
 
 class Forecast {
-  constructor(date, description) {
-    this.date = date;
-    this.description = description;
+  constructor(day) {
+    this.date = day.datetime;
+    this.description = day.weather.description;
+    this.low = day.low_temp;
+    this.high = day.high_temp;
   }
 }
 
 class Movies {
-  constructor(title, release_date, overview) {
-    this.title = title;
-    this.release_date = release_date;
-    this.overview = overview;
+  constructor(movie) {
+    this.title = movie.original_title;
+    this.release = movie.release_date;
+    this.overview = movie.overview;
+    this.rating = movie.vote_average;
+    this.votes = movie.vote_count;
   }
 }
 
