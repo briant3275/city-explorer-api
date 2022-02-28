@@ -16,6 +16,34 @@
 <!-- Use this area to document the iterative changes made to your application as each feature is successfully implemented. Use time stamps. Here's an example:
 
 01-01-2001 4:59pm - Application now has a fully-functional express server, with a GET route for the location resource. -->
+## WRRC
+
+Lab 06 WRRC with Lauren Murphy
+![Data Flow](WRRC-lab-6.png)
+
+Lab 07 WRRC with Andres Mills Gallego
+![Data Flow](WRRC2-22.png)
+
+Lab 08 WRRC with Rey Mercado
+![Data Flow](WRRC2-23.png)
+
+Lab 09 WRRC with Matt Rangel
+![Data Flow](WRRC2-24.png)
+
+Lab 10 WRRC with Brady Camp
+![Data Flow](WRRC2-25.png)
+
+## Time Estimates
+
+Name of feature: Set up cache
+
+Estimate of time needed to complete: 2 hours
+
+Start time: 3:00 p.m. CT
+
+Finish time: 6:00 p.m. CT
+
+Actual time needed to complete: 3 hours
 
 ## Credit and Collaborations
 
